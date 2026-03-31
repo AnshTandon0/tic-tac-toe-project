@@ -40,7 +40,7 @@ export default function LoginPage() {
       await sock.connect(sess, true)
       setSocket(sock)
 
-      useGameStore.getState().setMyUserId(sess.user_id)
+      useGameStore.getState().setMyUserId(sess.user_id!)
       navigate('/lobby')
     } catch {
       setError('Failed to connect. Please check your connection and try again.')

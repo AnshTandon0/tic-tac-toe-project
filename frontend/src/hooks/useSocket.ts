@@ -19,13 +19,13 @@ export function useSocket(navigate: NavigateFunction): void {
     if (!socket || !session) return
 
     socket.onmatchdata = (data) => {
-      const bytes = new Uint8Array(data.data as ArrayBuffer)
+      const bytes = new Uint8Array(data.data as unknown as ArrayBuffer)
 
       try {
         switch (data.op_code) {
           case OpCode.GAME_STATE: {
             const msg = GameStateMessage.fromBinary(bytes)
-            useGameStore.getState().applyGameState(msg, session.user_id)
+            useGameStore.getState().applyGameState(msg, session.user_id!)
             if (msg.phase === MatchPhase.MATCH_PHASE_PLAYING) navigate('/game')
             break
           }
@@ -59,7 +59,8 @@ export function useSocket(navigate: NavigateFunction): void {
     }
 
     return () => {
-      socket.onmatchdata = undefined
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      ;(socket as any).onmatchdata = undefined
     }
   }, [socket, session, navigate])
 }

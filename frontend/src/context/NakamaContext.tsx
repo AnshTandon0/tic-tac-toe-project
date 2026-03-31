@@ -1,7 +1,6 @@
 import {
   createContext,
   ReactNode,
-  useContext,
   useEffect,
   useMemo,
   useState,
@@ -28,7 +27,7 @@ export function NakamaProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     const raw = sessionStorage.getItem('nakama_session')
     if (!raw) return
-    const restored = Session.restore(raw)
+    const restored = Session.restore(raw, '')
     if (restored.isexpired(Date.now() / 1000)) {
       sessionStorage.removeItem('nakama_session')
       return

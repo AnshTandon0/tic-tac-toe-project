@@ -49,7 +49,8 @@ export function useMatchmaker(navigate: NavigateFunction): UseMatchmakerReturn {
     } finally {
       store.setMmStatus('idle')
       store.setMmTicket(null)
-      if (socket) socket.onmatchmakermatched = undefined
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      if (socket) (socket as any).onmatchmakermatched = undefined
     }
   }
 

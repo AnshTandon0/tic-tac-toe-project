@@ -2,7 +2,7 @@ import { Client } from '@heroiclabs/nakama-js'
 
 export const NakamaConfig = {
   host:      import.meta.env.VITE_NAKAMA_HOST      ?? '127.0.0.1',
-  port:      Number(import.meta.env.VITE_NAKAMA_PORT ?? 7350),
+  port:      import.meta.env.VITE_NAKAMA_PORT ?? '7350',
   useSSL:    import.meta.env.VITE_NAKAMA_USE_SSL   === 'true',
   serverKey: import.meta.env.VITE_NAKAMA_SERVER_KEY ?? 'defaultkey',
 } as const

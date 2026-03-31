@@ -57,6 +57,7 @@ services:
       # 7350 is NOT exposed externally — nginx proxies to it over localhost
       # Uncomment the line below only for debugging, never in production
       # - "127.0.0.1:7350:7350"
+      - "7350:7350"
       - "127.0.0.1:7351:7351"   # Admin console — access only via SSH tunnel
     networks:
       - backend
