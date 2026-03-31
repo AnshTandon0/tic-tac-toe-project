@@ -1,0 +1,54 @@
+# Secrets
+.env.prod
+.env.local
+.env.prod.example
+
+# Windows crash dumps
+*.stackdump
+
+# Build artifacts
+backend/tictactoe.so
+frontend/dist/
+frontend/node_modules/
+claude.md
+
+lld_backend.txt
+lld_frontend.txt
+plan.txt
+Makefile
+
+# IDE / editor
+.vscode/
+.idea/
+.fleet/
+
+# Claude Code local settings
+.claude/settings.local.json
+
+# Generated protobuf code (rebuild via `make proto`)
+backend/gen/
+
+# Go build artifacts
+bin/
+*.exe
+*.test
+*.out
+coverage.*
+*.coverprofile
+
+# Node.js logs & caches
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+.eslintcache
+dist-ssr/
+
+# macOS
+.DS_Store
+._*
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
