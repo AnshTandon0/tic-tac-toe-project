@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"tictactoe/gen"
 
 	"github.com/heroiclabs/nakama-common/runtime"
@@ -114,8 +115,10 @@ func (s *MatchState) isBoardFull() bool {
 // either a BoardUpdateMessage (normal move) or GameOverMessage (win/draw).
 // Invalid moves are silently dropped — no error is sent to the client.
 func handleMakeMove(
+	ctx        context.Context,
 	s          *MatchState,
 	dispatcher runtime.MatchDispatcher,
+	nk         runtime.NakamaModule,
 	userID     string,
 	req        *gen.MakeMoveRequest,
 	logger     runtime.Logger,
@@ -155,6 +158,16 @@ func handleMakeMove(
 		); err != nil {
 			logger.Warn("BroadcastMessage GameOver failed", "err", err.Error())
 		}
+		loser := s.PlayerO
+		if winner == s.PlayerO {
+			loser = s.PlayerX
+		}
+		if _, err := nk.LeaderboardRecordWrite(ctx, "tictactoe_wins", winner, s.Usernames[winner], 1, 0, nil, nil); err != nil {
+			logger.Warn("LeaderboardRecordWrite win failed", "err", err.Error())
+		}
+		if _, err := nk.LeaderboardRecordWrite(ctx, "tictactoe_losses", loser, s.Usernames[loser], 1, 0, nil, nil); err != nil {
+			logger.Warn("LeaderboardRecordWrite loss failed", "err", err.Error())
+		}
 		return
 	}
 
@@ -173,6 +186,12 @@ func handleMakeMove(
 			nil, nil, true,
 		); err != nil {
 			logger.Warn("BroadcastMessage Draw failed", "err", err.Error())
+		}
+		if _, err := nk.LeaderboardRecordWrite(ctx, "tictactoe_draws", s.PlayerX, s.Usernames[s.PlayerX], 1, 0, nil, nil); err != nil {
+			logger.Warn("LeaderboardRecordWrite draw (X) failed", "err", err.Error())
+		}
+		if _, err := nk.LeaderboardRecordWrite(ctx, "tictactoe_draws", s.PlayerO, s.Usernames[s.PlayerO], 1, 0, nil, nil); err != nil {
+			logger.Warn("LeaderboardRecordWrite draw (O) failed", "err", err.Error())
 		}
 		return
 	}

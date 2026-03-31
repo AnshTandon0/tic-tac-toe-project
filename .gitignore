@@ -12,9 +12,11 @@ frontend/dist/
 frontend/node_modules/
 claude.md
 
+# plans
 lld_backend.txt
 lld_frontend.txt
 plan.txt
+deployment-plan.txt
 Makefile
 
 # IDE / editor

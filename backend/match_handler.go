@@ -157,10 +157,10 @@ func (m *TicTacToeMatch) MatchJoin(
 
 // MatchLeave is called when a presence leaves (disconnect, explicit leave, or kick).
 func (m *TicTacToeMatch) MatchLeave(
-	_ context.Context,
+	ctx context.Context,
 	logger runtime.Logger,
 	_ *sql.DB,
-	_ runtime.NakamaModule,
+	nk runtime.NakamaModule,
 	dispatcher runtime.MatchDispatcher,
 	_ int64,
 	state interface{},
@@ -204,6 +204,12 @@ func (m *TicTacToeMatch) MatchLeave(
 			); err != nil {
 				logger.Warn("BroadcastMessage GameOver (forfeit) failed", "err", err.Error())
 			}
+			if _, err := nk.LeaderboardRecordWrite(ctx, "tictactoe_wins", winner, s.Usernames[winner], 1, 0, nil, nil); err != nil {
+				logger.Warn("LeaderboardRecordWrite forfeit win failed", "err", err.Error())
+			}
+			if _, err := nk.LeaderboardRecordWrite(ctx, "tictactoe_losses", uid, s.Usernames[uid], 1, 0, nil, nil); err != nil {
+				logger.Warn("LeaderboardRecordWrite forfeit loss failed", "err", err.Error())
+			}
 		}
 	}
 
@@ -232,7 +238,7 @@ func (m *TicTacToeMatch) MatchLoop(
 				logger.Warn("invalid MakeMoveRequest payload", "userId", msg.GetUserId())
 				continue
 			}
-			handleMakeMove(s, dispatcher, msg.GetUserId(), &req, logger)
+			handleMakeMove(ctx, s, dispatcher, nk, msg.GetUserId(), &req, logger)
 
 		default:
 			// Silently drop unknown or server-direction opcodes from clients.

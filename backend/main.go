@@ -10,10 +10,10 @@ import (
 // InitModule is the required entry point for a Nakama Go runtime plugin.
 // Called once on server startup when the .so is loaded.
 func InitModule(
-	_ context.Context,
+	ctx context.Context,
 	logger runtime.Logger,
 	_ *sql.DB,
-	_ runtime.NakamaModule,
+	nk runtime.NakamaModule,
 	initializer runtime.Initializer,
 ) error {
 	// Register the match handler under the name "tictactoe".
@@ -33,6 +33,12 @@ func InitModule(
 	// RPC ID maps to: POST /v2/rpc/rpc_create_match
 	if err := initializer.RegisterRpc("rpc_create_match", RpcCreateMatch); err != nil {
 		return err
+	}
+
+	for _, id := range []string{"tictactoe_wins", "tictactoe_losses", "tictactoe_draws"} {
+		if err := nk.LeaderboardCreate(ctx, id, true, "desc", "incr", "", nil); err != nil {
+			logger.Warn("LeaderboardCreate failed", "id", id, "err", err.Error())
+		}
 	}
 
 	logger.Info("TicTacToe plugin loaded successfully")
