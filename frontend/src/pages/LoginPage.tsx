@@ -7,10 +7,10 @@ import AppShell from 'components/layout/AppShell'
 
 function getOrCreateDeviceId(): string {
   const key = 'nakama_device_id'
-  const existing = sessionStorage.getItem(key)
+  const existing = localStorage.getItem(key)
   if (existing) return existing
   const id = crypto.randomUUID()
-  sessionStorage.setItem(key, id)
+  localStorage.setItem(key, id)
   return id
 }
 
