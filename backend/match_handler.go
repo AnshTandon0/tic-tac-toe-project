@@ -222,7 +222,7 @@ func (m *TicTacToeMatch) MatchLoop(
 	ctx context.Context,
 	logger runtime.Logger,
 	_ *sql.DB,
-	_ runtime.NakamaModule,
+	nk runtime.NakamaModule,
 	dispatcher runtime.MatchDispatcher,
 	tick int64,
 	state interface{},
